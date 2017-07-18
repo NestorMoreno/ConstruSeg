@@ -11,6 +11,8 @@ namespace ConstruccionSegura.Controllers
 {
     public class HomeController : BaseController
     {
+        #region Views Methods
+
         public ActionResult Index()
         {
             ViewBag.dangerGroups = getDangerGroups();
@@ -55,6 +57,34 @@ namespace ConstruccionSegura.Controllers
                 return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
             }
         }
+
+        [HttpPost]
+        public JsonResult GetRecommendationsType(int? id)
+        {
+            try
+            {
+                return Json(new { success = true, data = getRecommendationsType(id) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetControls(int? id, int? idDanger)
+        {
+            try
+            {
+                return Json(new { success = true, data = getControls(id, idDanger) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        #endregion
 
         #region Private Methods
 
@@ -136,6 +166,50 @@ namespace ConstruccionSegura.Controllers
                     else
                     {
                         return context.recomendaciones.ToList().Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnRecomendacion.ToString() });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private IEnumerable<SelectListItem> getRecommendationsType(int? id)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (id.HasValue)
+                    {
+                        return context.tiposrecomendaciones.ToList().Where(p => p.idnTipoRecomendacion == id).Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnTipoRecomendacion.ToString() });
+                    }
+                    else
+                    {
+                        return context.tiposrecomendaciones.ToList().Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnTipoRecomendacion.ToString() });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private IEnumerable<SelectListItem> getControls(int? id, int? idDanger)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (idDanger.HasValue)
+                    {
+                        return context.controlesriesgos.ToList().Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnControlRiesgo.ToString() });
+                    }
+                    else
+                    {
+                        return context.controlesriesgos.ToList().Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnControlRiesgo.ToString() });
                     }
                 }
             }

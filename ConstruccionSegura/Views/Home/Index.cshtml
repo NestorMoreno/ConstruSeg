@@ -31,7 +31,14 @@
                         <select id="effect" name="effect" class="form-control"></select>
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEffect">Nuevo</button>
+                        <button id="btnAddEffect" type="button" class="btn btn-success">Adicionar</button>
+                        <button id="btnNewEffect" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEffect">Nuevo</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-3">
+                        <table id="effectTable" class="table"></table>
                     </div>
                 </div>
                 <div class="form-group">
@@ -40,16 +47,30 @@
                         <select id="recommendation" name="recommendation" class="form-control"></select>
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRecommendation">Nueva</button>
+                        <button id="btnAddRecommendation" type="button" class="btn btn-success">Adicionar</button>
+                        <button id="btnNewRecommendation" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRecommendation">Nueva</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-3">
+                        <table id="recommendationTable" class="table"></table>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="controles" class="col-sm-3 control-label">Controles</label>
                     <div class="col-sm-3">
-                        <select id="controls" name="controls" class="form-control"></select>
+                        <select id="control" name="control" class="form-control"></select>
                     </div>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalControl">Nuevo</button>
+                        <button id="btnAddControl" type="button" class="btn btn-success">Adicionar</button>
+                        <button id="btnNewControl" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalControl">Nuevo</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-3">
+                        <table id="controlTable" class="table"></table>
                     </div>
                 </div>
             </form>
@@ -68,16 +89,8 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="effectCode">Código</label>
-                        <input type="text" class="form-control" id="effectCode" placeholder="">
-                    </div>
-                    <div class="form-group">
                         <label for="effectDescription">Descripción</label>
                         <input type="text" class="form-control" id="effectDescription" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="effectList">Lista/Coincidencias</label>
-                        <textarea class="form-control" rows="3" id="effectList"></textarea>
                     </div>
                 </form>
             </div>
@@ -99,20 +112,12 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="recommendationCode">Código</label>
-                        <input type="text" class="form-control" id="recommendationCode" placeholder="">
-                    </div>
-                    <div class="form-group">
                         <label for="recommendationType">Tipo</label>
-                        <select id="danger" name="recommendationType" class="form-control"></select>
+                        <select id="recommendationType" name="recommendationType" class="form-control"></select>
                     </div>
                     <div class="form-group">
                         <label for="recommendationDescription">Descripción</label>
                         <input type="text" class="form-control" id="recommendationDescription" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="recommendationList">Recomendaciones/Listado</label>
-                        <textarea class="form-control" rows="3" id="recommendationList"></textarea>
                     </div>
                 </form>
             </div>
@@ -134,8 +139,11 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="controlCode">Comodín</label>
-                        <input type="text" class="form-control" id="controlCode" placeholder="">
+                        <label for="controlWilcard">Comodín</label>
+                        <select id="wilcard" name="comodin" class="form-control">
+                            <option value="Verificar que">Verificar que</option>
+                            <option value="Verificar que">Validar si</option> 
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="recommendationDescription">Descripción</label>
@@ -152,6 +160,8 @@
 </div>
 
 @section scripts{
+
+    <script src="~/Scripts/jquery-ui.js"></script>
     <script src="~/ViewManager/Common/common.js"></script>
     <script src="~/ViewManager/Common/ajax.js"></script>
     <script src="~/ViewManager/Common/message.js"></script>

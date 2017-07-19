@@ -84,6 +84,58 @@ namespace ConstruccionSegura.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult SaveNewEffect(string name)
+        {
+            try
+            {
+                return Json(new { success = true, data = saveNewEffect(name) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SaveNewRecommendation(int idDanger, int idType, string name)
+        {
+            try
+            {
+                return Json(new { success = true, data = saveNewRecommendation(idDanger, idType, name) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SaveNewControl(int idType, string name, string wilcard)
+        {
+            try
+            {
+                return Json(new { success = true, data = saveNewControl(idType, name, wilcard) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult AddEffect(int id, int idDanger)
+        {
+            try
+            {
+                return Json(new { success = true, data = addEffect(id, idDanger) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -133,13 +185,8 @@ namespace ConstruccionSegura.Controllers
                 {
                     if (idDanger.HasValue)
                     {
-                        var allEffects = context.rpeligrosposiblesefectos.ToList().Where(p => p.idnPeligro == idDanger).ToList();
-                        if (allEffects.Any())
-                        {
-                            var effects = context.posiblesefectos.ToList().Where(q => !allEffects.Any(y => y.idnPosibleEfecto == q.idnPosibleEfecto)).ToList();
-                            return effects.Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnPosibleEfecto.ToString() }).ToList();
-                        }
-                        return null;
+                        var effects = context.posiblesefectos.Where(p=>p.rpeligrosposiblesefectos.FirstOrDefault().idnPeligro == idDanger.Value).ToList();
+                        return effects.Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnPosibleEfecto.ToString() });
                     }
                     else
                     {
@@ -205,12 +252,114 @@ namespace ConstruccionSegura.Controllers
                 {
                     if (idDanger.HasValue)
                     {
-                        return context.controlesriesgos.ToList().Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnControlRiesgo.ToString() });
+                        var controls = context.controlesriesgos.Where(p=>p.peligros.FirstOrDefault().idnPeligro == idDanger).ToList();
+                        return controls.Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnControlRiesgo.ToString() });
                     }
                     else
                     {
                         return context.controlesriesgos.ToList().Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnControlRiesgo.ToString() });
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private int saveNewEffect(string name)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        var newEffect = new posiblesefectos{
+                            Nombre = name
+                        };
+                        context.posiblesefectos.Add(newEffect);
+                        return context.SaveChanges();
+                    }
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private int saveNewRecommendation(int idDanger, int idType, string name)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        var newRecommendation = new recomendaciones
+                        {
+                            idnPeligro = idDanger,
+                            idnTipoRecomendacion = idType,
+                            Nombre = name
+                        };
+                        context.recomendaciones.Add(newRecommendation);
+                        return context.SaveChanges();
+                    }
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private int saveNewControl(int idType, string name, string wilcard)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        var newControl = new controlesriesgos
+                        {
+                            idnTipoControl = idType,
+                            Nombre = name,
+                            Comodin = wilcard
+                        };
+                        context.controlesriesgos.Add(newControl);
+                        return context.SaveChanges();
+                    }
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
+        private int addEffect(int id, int idDanger)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (id > 0 && idDanger > 0)
+                    {
+                        var newDangerEffect = new rpeligrosposiblesefectos
+                        {
+                            idnPosibleEfecto = id,
+                            idnPeligro = idDanger,
+                            dFechaModificacion = DateTime.Now
+                        };
+                        context.rpeligrosposiblesefectos.Add(newDangerEffect);
+                        return context.SaveChanges();
+                    }
+                    return 0;
                 }
             }
             catch (Exception ex)

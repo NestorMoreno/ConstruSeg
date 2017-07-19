@@ -5,12 +5,14 @@
                 .append($("<option></option>")
                     .attr("value", 0)
                     .text("Seleccione un peligro..."));
-            $.each(result.data, function (i, item) {
-                $('#danger')
-                    .append($("<option></option>")
-                        .attr("value", item.Value)
-                        .text(item.Text));
-            });
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#danger')
+                        .append($("<option></option>")
+                            .attr("value", item.Value)
+                            .text(item.Text));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Peligros. " + result.message);
@@ -18,12 +20,14 @@
     },
     getAllEffects: function (result) {
         if (result.success) {
-            $.each(result.data, function (i, item) {
-                $('#effect')
-                    .append($("<option></option>")
-                        .attr("value", item.Value)
-                        .text(item.Text));
-            });
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#effect')
+                        .append($("<option></option>")
+                            .attr("value", item.Value)
+                            .text(item.Text));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Efectos. " + result.message);
@@ -33,11 +37,13 @@
         if (result.success) {
             $('#effectTable')
                 .append($("<th>")
-                .append("<td>Efectos Asociados"));
-            $.each(result.data, function (i, item) {
-                $('#effectTable')
-                    .append($("<tr><td>" + item.Text + "</td></tr>"));
-            });
+                    .append("<td>Efectos Asociados"));
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#effectTable')
+                        .append($("<tr><td>" + item.Text + "</td></tr>"));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Efectos. " + result.message);
@@ -45,12 +51,14 @@
     },
     getAllRecommendations: function (result) {
         if (result.success) {
-            $.each(result.data, function (i, item) {
-                $('#recommendation')
-                    .append($("<option></option>")
-                        .attr("value", item.Value)
-                        .text(item.Text));
-            });
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#recommendation')
+                        .append($("<option></option>")
+                            .attr("value", item.Value)
+                            .text(item.Text));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Recomendaciones. " + result.message);
@@ -61,10 +69,12 @@
             $('#recommendationTable')
                 .append($("<th>")
                     .append("<td>Recomendaciones Asociadas"));
-            $.each(result.data, function (i, item) {
-                $('#recommendationTable')
-                    .append($("<tr><td>" + item.Text + "</td></tr>"));
-            });
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#recommendationTable')
+                        .append($("<tr><td>" + item.Text + "</td></tr>"));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Recomendaciones. " + result.message);
@@ -72,12 +82,14 @@
     },
     getRecommendationsType: function (result) {
         if (result.success) {
-            $.each(result.data, function (i, item) {
-                $('#recommendationType')
-                    .append($("<option></option>")
-                        .attr("value", item.Value)
-                        .text(item.Text));
-            });
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#recommendationType')
+                        .append($("<option></option>")
+                            .attr("value", item.Value)
+                            .text(item.Text));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Tipos de Recomendaciones. " + result.message);
@@ -85,12 +97,14 @@
     },
     getAllControls: function (result) {
         if (result.success) {
-            $.each(result.data, function (i, item) {
-                $('#control')
-                    .append($("<option></option>")
-                        .attr("value", item.Value)
-                        .text(item.Text));
-            });
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#control')
+                        .append($("<option></option>")
+                            .attr("value", item.Value)
+                            .text(item.Text));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Controles. " + result.message);
@@ -101,15 +115,58 @@
             $('#controlTable')
                 .append($("<th>")
                     .append("<td>Controles Asociados"));
-            $.each(result.data, function (i, item) {
-                $('#controlTable')
-                    .append($("<tr><td>" + item.Text + "</td></tr>"));
-            });
+            if (result.data) {
+                $.each(result.data, function (i, item) {
+                    $('#controlTable')
+                        .append($("<tr><td>" + item.Text + "</td></tr>"));
+                });
+            }
         }
         else {
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar obtener Controles. " + result.message);
         }
-    }
+    },
+    saveNewEffect: function (result) {
+        if (result.success) {
+            $('#effect').combobox('setValue');
+            $("#effectDescription").val("");
+            $('#modalEffect').modal('hide');
+            methods.getAllEffects();
+        }
+        else {
+            msgAccept(1, "Construcción Segura", "Se presentó error al intentar guardar Efecto. " + result.message);
+        }
+    },
+    saveNewRecommendation: function (result) {
+        if (result.success) {
+            $('#recommendation').combobox('setValue');
+            $("#recommendationDescription").val("");
+            $('#modalRecommendation').modal('hide');
+            methods.getAllRecommendations();
+        }
+        else {
+            msgAccept(1, "Construcción Segura", "Se presentó error al intentar guardar Recomendación. " + result.message);
+        }
+    },
+    saveNewControl: function (result) {
+        if (result.success) {
+            $('#control').combobox('setValue');
+            $("#controlDescription").val("");
+            $('#modalControl').modal('hide');
+            methods.getAllControls();
+        }
+        else {
+            msgAccept(1, "Construcción Segura", "Se presentó error al intentar guardar Control. " + result.message);
+        }
+    },
+    addEffect: function (result) {
+        if (result.success) {
+            methods.getEffects();
+        }
+        else {
+            msgAccept(1, "Construcción Segura", "Se presentó error al intentar adicionar Efecto. " + result.message);
+        }
+    },
 }
 
 var methods = {
@@ -122,13 +179,28 @@ var methods = {
         $("#control").combobox();
         methods.selectedDanger(false);
         $('#btnNewEffect').click(function () {
-            var txt = $('#effect').combobox('getValue');
-            $('#effectDescription').val(txt);
+            $('#effectDescription').val($('#effect').combobox('getValue'));
         });
+        $('#btnNewRecommendation').click(function () {
+            $('#recommendationDescription').val($('#recommendation').combobox('getValue'));
+        });
+        $('#btnNewControl').click(function () {
+            $('#controlDescription').val($('#control').combobox('getValue'));
+        });
+        
+        $("#formEffect").validate({
+            submitHandler: methods.saveNewEffect
+        });
+        $("#formRecommendation").validate({
+            submitHandler: methods.saveNewRecommendation
+        });
+        $("#formControl").validate({
+            submitHandler: methods.saveNewControl
+        });
+
+        //$("#btnAddEffect").click(methods.addEffect);
     },
     selectedDanger: function (show) {
-
-        //$('#danger').empty();
         $('#effect').empty();
         $('#effect').combobox('setValue');
         $('#effectTable').empty();
@@ -138,8 +210,6 @@ var methods = {
         $('#control').empty();
         $('#control').combobox('setValue');
         $('#controlTable').empty();
-
-
         if (show) {
             $('#btnNewEffect').show();
             $('#btnAddEffect').show();
@@ -182,16 +252,16 @@ var methods = {
     changeDanger: function () {
         if ($('#danger').val() && $('#danger').val() > 0) {
             methods.selectedDanger(true);
+            methods.getEffects();
+            methods.getAllEffects();
+            methods.getAllRecommendations();
+            methods.getRecommendations();
+            methods.getAllControls();
+            methods.getControls();
         }
         else {
             methods.selectedDanger(false);
         }
-        methods.getEffects();
-        methods.getAllEffects();
-        methods.getAllRecommendations();
-        methods.getRecommendations();
-        methods.getAllControls();
-        methods.getControls();
     },
     getAllEffects: function () {
         $('#effect').empty();
@@ -215,7 +285,6 @@ var methods = {
     },
     getRecommendations: function () {
         var idDanger = $('#danger').val();
-        $('#recommendation').empty();
         if (idDanger && idDanger > 0) {
             var data = '{ id: null, idDanger:' + idDanger + ' }';
             var ajax = new AjaxHttpSender();
@@ -236,11 +305,58 @@ var methods = {
     },
     getControls: function() {
         var idDanger = $('#danger').val();
-        $('#control').empty();
         if (idDanger && idDanger > 0) {
             var data = '{ id: null, idDanger:' + idDanger + ' }';
             var ajax = new AjaxHttpSender();
             ajax.sendPost('../Home/GetControls/', data, result.getControls);
+        }
+    },
+
+    saveNewEffect: function () {
+        $.ajax({
+            url: "../Home/SaveNewEffect/",
+            type: "post",
+            data: { name: $("#effectDescription").val() },
+            success: result.saveNewEffect
+        });
+    },
+    saveNewRecommendation: function () {
+        $.ajax({
+            url: "../Home/SaveNewRecommendation/",
+            type: "post",
+            data: { idDanger: $('#danger').val(), idType: $("#recommendationType").val(), name: $("#recommendationDescription").val() },
+            success: result.saveNewRecommendation
+        });
+    },
+    saveNewControl: function () {
+        $.ajax({
+            url: "../Home/SaveNewControl/",
+            type: "post",
+            data: { idType: 1, name: $("#controlDescription").val(), wilcard: $("#controlWilcard").val() },
+            success: result.saveNewControl
+        });
+    },
+
+    addEffect: function () {
+        var value = $('#effect').combobox('getValue').toLowerCase();
+        valid = false;
+        var id = 0;
+
+        $("#effect").children("option").each(function () {
+            if ($(this).text().toLowerCase() === value) {
+                id = $(this).val();
+                this.selected = valid = true;
+                return false;
+            }
+        });
+
+        if (valid) {
+            $.ajax({
+                url: "../Home/AddEffect/",
+                type: "post",
+                data: { id: id, idDanger: $("#danger").val() },
+                success: result.addEffect
+            });
         }
     }
 }

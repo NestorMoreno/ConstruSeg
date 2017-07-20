@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using ConstruccionSegura.Models;
 using Newtonsoft.Json.Linq;
 using System.Web.Script.Serialization;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity;
 
 namespace ConstruccionSegura.Controllers
 {
@@ -129,6 +131,32 @@ namespace ConstruccionSegura.Controllers
             try
             {
                 return Json(new { success = true, data = addEffect(id, idDanger) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult AddRecommendation(int id, int idDanger)
+        {
+            try
+            {
+                return Json(new { success = true, data = addRecommendation(id, idDanger) }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult AddControl(int id, int idDanger)
+        {
+            try
+            {
+                return Json(new { success = true, data = addControl(id, idDanger) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -368,7 +396,81 @@ namespace ConstruccionSegura.Controllers
             }
         }
 
+        private int addRecommendation(int id, int idDanger)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (id > 0 && idDanger > 0)
+                    {
+                        var newRecommendation = context.recomendaciones.Where(p=>p.idnPeligro == idDanger).FirstOrDefault();
+                        newRecommendation.idnPeligro = idDanger;
+                        return context.SaveChanges();
+                    }
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private int addControl(int id, int idDanger)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (id > 0 && idDanger > 0)
+                    {
+                        var peligro = context.peligros.Find(idDanger);
+                        var controlRiesgo = context.controlesriesgos.Find(id);
+                        // Establece la relación entre el peligro y el control                    
+                        var stateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
+                        stateManager.ChangeRelationshipState(
+                            controlRiesgo,
+                            peligro,
+                            c => c.peligros,
+                            EntityState.Added);
+                        return context.SaveChanges();
+                    }
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
+        //private int saveControlPeligro(int idType, int idPeligro, string name, string wilcard)
+        //{
+        //    try
+        //    {
+        //        var controlId = saveNewControl(idType, name, wilcard);
+        //        using (var context = new Model())
+        //        {
+        //            var peligro = context.peligros.Find(idPeligro);
+        //            var controlRiesgo = context.controlesriesgos.Find(controlId);
+        //            // Establece la relación entre el peligro y el control                    
+        //            var stateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
+        //            stateManager.ChangeRelationshipState(                       
+        //                controlRiesgo,                       
+        //                peligro,                       
+        //                c => c.peligros,                       
+        //                EntityState.Added);
+        //            return context.SaveChanges();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
         #endregion
+
 
     }
 }

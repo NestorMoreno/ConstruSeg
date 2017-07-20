@@ -35,6 +35,7 @@
     },
     getEffects: function (result) {
         if (result.success) {
+            $('#effectTable').empty();
             $('#effectTable')
                 .append($("<th>")
                     .append("<td>Efectos Asociados"));
@@ -65,6 +66,7 @@
         }
     },
     getRecommendations: function (result) {
+        $('#recommendationTable').empty();
         if (result.success) {
             $('#recommendationTable')
                 .append($("<th>")
@@ -111,6 +113,7 @@
         }
     },
     getControls: function (result) {
+        $('#controlTable').empty();
         if (result.success) {
             $('#controlTable')
                 .append($("<th>")
@@ -167,6 +170,22 @@
             msgAccept(1, "Construcción Segura", "Se presentó error al intentar adicionar Efecto. " + result.message);
         }
     },
+    addRecommendation: function (result) {
+        if (result.success) {
+            methods.getRecommendations();
+        }
+        else {
+            msgAccept(1, "Construcción Segura", "Se presentó error al intentar adicionar Recomendación. " + result.message);
+        }
+    },
+    addControl: function (result) {
+        if (result.success) {
+            methods.getControls();
+        }
+        else {
+            msgAccept(1, "Construcción Segura", "Se presentó error al intentar adicionar Control. " + result.message);
+        }
+    }
 }
 
 var methods = {
@@ -198,7 +217,9 @@ var methods = {
             submitHandler: methods.saveNewControl
         });
 
-        //$("#btnAddEffect").click(methods.addEffect);
+        $("#btnAddEffect").click(methods.addEffect);
+        $("#btnAddRecommendation").click(methods.addRecommendation);
+        $("#btnAddControl").click(methods.addControl);
     },
     selectedDanger: function (show) {
         $('#effect').empty();
@@ -356,6 +377,51 @@ var methods = {
                 type: "post",
                 data: { id: id, idDanger: $("#danger").val() },
                 success: result.addEffect
+            });
+        }
+    },
+    addRecommendation: function () {
+        var value = $('#recommendation').combobox('getValue').toLowerCase();
+        valid = false;
+        var id = 0;
+
+        $("#recommendation").children("option").each(function () {
+            if ($(this).text().toLowerCase() === value) {
+                id = $(this).val();
+                this.selected = valid = true;
+                return false;
+            }
+        });
+
+        if (valid) {
+            $.ajax({
+                url: "../Home/AddRecommendation/",
+                type: "post",
+                data: { id: id, idDanger: $("#danger").val() },
+                success: result.addRecommendation
+            });
+        }
+    }
+    ,
+    addControl: function () {
+        var value = $('#control').combobox('getValue').toLowerCase();
+        valid = false;
+        var id = 0;
+
+        $("#control").children("option").each(function () {
+            if ($(this).text().toLowerCase() === value) {
+                id = $(this).val();
+                this.selected = valid = true;
+                return false;
+            }
+        });
+
+        if (valid) {
+            $.ajax({
+                url: "../Home/AddControl/",
+                type: "post",
+                data: { id: id, idDanger: $("#danger").val() },
+                success: result.addControl
             });
         }
     }

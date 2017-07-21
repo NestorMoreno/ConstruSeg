@@ -52,6 +52,7 @@ namespace ConstruccionSegura.Controllers
         {
             try
             {
+                
                 return Json(new { success = true, data = getRecommendations(id, idDanger) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -213,7 +214,7 @@ namespace ConstruccionSegura.Controllers
                 {
                     if (idDanger.HasValue)
                     {
-                        var effects = context.posiblesefectos.Where(p=>p.rpeligrosposiblesefectos.FirstOrDefault().idnPeligro == idDanger.Value).ToList();
+                        var effects = context.posiblesefectos.Where(p => p.rpeligrosposiblesefectos.Any(r => r.idnPeligro == idDanger)).ToList();
                         return effects.Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnPosibleEfecto.ToString() });
                     }
                     else
@@ -242,6 +243,21 @@ namespace ConstruccionSegura.Controllers
                     {
                         return context.recomendaciones.ToList().Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnRecomendacion.ToString() });
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private List<recomendaciones> getEffectsByDanger(int idDanger)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    return context.recomendaciones.ToList().Where(p => p.idnPeligro == idDanger).ToList();
                 }
             }
             catch (Exception ex)
@@ -280,7 +296,7 @@ namespace ConstruccionSegura.Controllers
                 {
                     if (idDanger.HasValue)
                     {
-                        var controls = context.controlesriesgos.Where(p=>p.peligros.FirstOrDefault().idnPeligro == idDanger).ToList();
+                        var controls = context.controlesriesgos.Where(p=>p.peligros.Any(r=> r.idnPeligro == idDanger)).ToList();
                         return controls.Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnControlRiesgo.ToString() });
                     }
                     else
@@ -404,7 +420,7 @@ namespace ConstruccionSegura.Controllers
                 {
                     if (id > 0 && idDanger > 0)
                     {
-                        var newRecommendation = context.recomendaciones.Where(p=>p.idnPeligro == idDanger).FirstOrDefault();
+                        var newRecommendation = context.recomendaciones.Where(p=>p.idnRecomendacion == id).FirstOrDefault();
                         newRecommendation.idnPeligro = idDanger;
                         return context.SaveChanges();
                     }
@@ -445,32 +461,6 @@ namespace ConstruccionSegura.Controllers
             }
         }
         
-        //private int saveControlPeligro(int idType, int idPeligro, string name, string wilcard)
-        //{
-        //    try
-        //    {
-        //        var controlId = saveNewControl(idType, name, wilcard);
-        //        using (var context = new Model())
-        //        {
-        //            var peligro = context.peligros.Find(idPeligro);
-        //            var controlRiesgo = context.controlesriesgos.Find(controlId);
-        //            // Establece la relación entre el peligro y el control                    
-        //            var stateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
-        //            stateManager.ChangeRelationshipState(                       
-        //                controlRiesgo,                       
-        //                peligro,                       
-        //                c => c.peligros,                       
-        //                EntityState.Added);
-        //            return context.SaveChanges();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
         #endregion
-
-
     }
 }

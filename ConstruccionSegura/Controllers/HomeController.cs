@@ -52,8 +52,21 @@ namespace ConstruccionSegura.Controllers
         {
             try
             {
-                
-                return Json(new { success = true, data = getRecommendations(id, idDanger) }, JsonRequestBehavior.AllowGet);
+                var recommendations = getRecommendations(id, idDanger);
+                return Json(new { success = true, data = recommendations }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetAllRecommendations()
+        {
+            try
+            {
+                return Json(new { success = true, data = getRecommendationsList(null, null) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -79,7 +92,21 @@ namespace ConstruccionSegura.Controllers
         {
             try
             {
-                return Json(new { success = true, data = getControls(id, idDanger) }, JsonRequestBehavior.AllowGet);
+                var controls = getControls(id, idDanger);
+                return Json(new { success = true, data = controls }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex }, JsonRequestBehavior.AllowGet); ;
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetControlsList()
+        {
+            try
+            {
+                return Json(new { success = true, data = getControlsList(null, null) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -229,7 +256,7 @@ namespace ConstruccionSegura.Controllers
             }
         }
 
-        private IEnumerable<SelectListItem> getRecommendations(int? id, int? idDanger)
+        private IEnumerable<SelectListItem> getRecommendationsList(int? id, int? idDanger)
         {
             try
             {
@@ -251,13 +278,32 @@ namespace ConstruccionSegura.Controllers
             }
         }
 
-        private List<recomendaciones> getEffectsByDanger(int idDanger)
+        private IEnumerable<object> getRecommendations(int? id, int? idDanger)
         {
             try
             {
                 using (var context = new Model())
                 {
-                    return context.recomendaciones.ToList().Where(p => p.idnPeligro == idDanger).ToList();
+                    if (idDanger.HasValue)
+                    {
+                        var recommendations = context.recomendaciones.Where(p => p.idnPeligro == idDanger).Select(p => new {
+                            idnRecomendacion = p.idnRecomendacion,
+                            Nombre = p.Nombre,
+                            Peligro = p.peligros.Nombre,
+                            TipoRecomendacion = p.tiposrecomendaciones.Nombre
+                        }).ToList();
+                        return recommendations;
+                    }
+                    else
+                    {
+                        var recommendations = context.recomendaciones.Select(p => new {
+                            idnRecomendacion = p.idnRecomendacion,
+                            Nombre = p.Nombre,
+                            Peligro = p.peligros.Nombre,
+                            TipoRecomendacion = p.tiposrecomendaciones.Nombre
+                        }).ToList();
+                        return recommendations;
+                    }
                 }
             }
             catch (Exception ex)
@@ -288,7 +334,7 @@ namespace ConstruccionSegura.Controllers
             }
         }
 
-        private IEnumerable<SelectListItem> getControls(int? id, int? idDanger)
+        private IEnumerable<object> getControls(int? id, int? idDanger)
         {
             try
             {
@@ -296,7 +342,41 @@ namespace ConstruccionSegura.Controllers
                 {
                     if (idDanger.HasValue)
                     {
-                        var controls = context.controlesriesgos.Where(p=>p.peligros.Any(r=> r.idnPeligro == idDanger)).ToList();
+                        var controls = context.controlesriesgos.Where(p=>p.peligros.Any(r=> r.idnPeligro == idDanger)).Select(p => new
+                        {
+                            idnControlRiesgo = p.idnControlRiesgo,
+                            Nombre = p.Nombre,
+                            Comodin = p.Comodin
+                        }).ToList();
+                        return controls;
+                    }
+                    else
+                    {
+                        var controls = context.controlesriesgos.Select(p => new
+                        {
+                            idnControlRiesgo = p.idnControlRiesgo,
+                            Nombre = p.Nombre,
+                            Comodin = p.Comodin
+                        }).ToList();
+                        return controls;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private IEnumerable<SelectListItem> getControlsList(int? id, int? idDanger)
+        {
+            try
+            {
+                using (var context = new Model())
+                {
+                    if (idDanger.HasValue)
+                    {
+                        var controls = context.controlesriesgos.ToList().Where(p => p.peligros.Any(r => r.idnPeligro == idDanger)).ToList();
                         return controls.Select(p => new SelectListItem() { Text = p.Nombre, Value = p.idnControlRiesgo.ToString() });
                     }
                     else

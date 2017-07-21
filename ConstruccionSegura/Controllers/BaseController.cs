@@ -41,8 +41,8 @@ namespace ConstruccionSegura.Controllers
             if (IsAjax(filterContext))
             {
                 filterContext.Result = new JsonResult()
-                {
-                    Data = filterContext.Exception.Message,
+                { 
+                    Data = new { success = false, message = filterContext.Exception.Message },
                     JsonRequestBehavior = JsonRequestBehavior.AllowGet
                 };
 

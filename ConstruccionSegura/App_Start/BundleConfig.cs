@@ -26,6 +26,15 @@ namespace ConstruccionSegura
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/index").Include(
+                      "~/Scripts/jquery-ui.js",
+                      "~/Scripts/jquery.validate.js",
+                      "~/ViewManager/Common/common.js",
+                      "~/ViewManager/Common/ajax.js",
+                      "~/ViewManager/Common/message.js",
+                      "~/ViewManager/App/index.js"
+                      ));
         }
     }
 }

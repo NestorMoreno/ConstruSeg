@@ -47,3 +47,8 @@ textarea {
     color: #ff0000;
     font-size: 12px;
 }
+
+.modal-table {
+    height: 300px;
+    overflow: auto;
+}

@@ -24,6 +24,7 @@
             $('#modalEffectTable')
                 .append("<tr><th>Efecto</th><th>Adicionar</th></tr>");
             if (result.data) {
+                $(document).off('click', '.addEffect');
                 $.each(result.data, function (i, item) {
                     $('#effect')
                         .append($("<option></option>")
@@ -63,6 +64,7 @@
             $('#modalRecommendationTable')
                 .append("<tr><th>Recomendación</th><th>Adicionar</th></tr>");
             if (result.data) {
+                $(document).off('click', '.addRecommendation');
                 $.each(result.data, function (i, item) {
                     $('#recommendation')
                         .append($("<option></option>")
@@ -115,6 +117,7 @@
             $('#modalControlTable')
                 .append("<tr><th>Control</th><th>Adicionar</th></tr>");
             if (result.data) {
+                $(document).off('click', '.addControl');
                 $.each(result.data, function (i, item) {
                     $('#control')
                         .append($("<option></option>")
@@ -182,6 +185,9 @@
     },
     addEffect: function (result) {
         if (result.success) {
+            if (result.data == -1) {
+                msgAccept(1, "Construcción Segura", "El Efecto ya está asociado.");
+            }
             methods.getEffects();
             $('#modalEffect').modal('hide');
         }
@@ -191,6 +197,9 @@
     },
     addRecommendation: function (result) {
         if (result.success) {
+            if (result.data == -1) {
+                msgAccept(1, "Construcción Segura", "La Recomendación ya está asociada.");
+            }
             methods.getRecommendations();
             $('#modalRecommendation').modal('hide');
         }
@@ -200,6 +209,9 @@
     },
     addControl: function (result) {
         if (result.success) {
+            if (result.data == -1) {
+                msgAccept(1, "Construcción Segura", "El Control ya está asociado.");
+            }
             methods.getControls();
             $('#modalControl').modal('hide');
         }

@@ -472,6 +472,10 @@ namespace ConstruccionSegura.Controllers
             {
                 using (var context = new Model())
                 {
+                    if (context.rpeligrosposiblesefectos.Any(p=>p.idnPosibleEfecto == id && p.idnPeligro == idDanger))
+                    {
+                        return -1;
+                    }
                     if (id > 0 && idDanger > 0)
                     {
                         var newDangerEffect = new rpeligrosposiblesefectos
@@ -498,6 +502,10 @@ namespace ConstruccionSegura.Controllers
             {
                 using (var context = new Model())
                 {
+                    if (context.recomendaciones.Any(p => p.idnRecomendacion == id && p.idnPeligro == idDanger))
+                    {
+                        return -1;
+                    }
                     if (id > 0 && idDanger > 0)
                     {
                         var newRecommendation = context.recomendaciones.Where(p=>p.idnRecomendacion == id).FirstOrDefault();
@@ -519,12 +527,18 @@ namespace ConstruccionSegura.Controllers
             {
                 using (var context = new Model())
                 {
+                    var a = context.controlesriesgos.Include(p => p.peligros);
+                    if (a.Any(p => p.idnControlRiesgo == id && p.peligros.Select(q => q.idnPeligro == idDanger).Any()))
+                    {
+                        return -1;
+                    }
                     if (id > 0 && idDanger > 0)
                     {
                         var peligro = context.peligros.Find(idDanger);
                         var controlRiesgo = context.controlesriesgos.Find(id);
                         // Establece la relación entre el peligro y el control                    
                         var stateManager = ((IObjectContextAdapter)context).ObjectContext.ObjectStateManager;
+                        
                         stateManager.ChangeRelationshipState(
                             controlRiesgo,
                             peligro,

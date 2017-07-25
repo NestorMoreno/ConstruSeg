@@ -527,8 +527,8 @@ namespace ConstruccionSegura.Controllers
             {
                 using (var context = new Model())
                 {
-                    var a = context.controlesriesgos.Include(p => p.peligros);
-                    if (a.Any(p => p.idnControlRiesgo == id && p.peligros.Select(q => q.idnPeligro == idDanger).Any()))
+                    var a = context.controlesriesgos.Include(p => p.peligros).ToList();
+                    if (a.Any(p => p.idnControlRiesgo == id && p.peligros.Where(q => q. idnPeligro == idDanger).Any()))
                     {
                         return -1;
                     }
